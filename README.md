@@ -30,5 +30,24 @@ pip install -e .
 bash shells/test.sh
 ``` 
 
+## File Structure
+
+
+📦xai-cnn
+ ┣ 📂xai_cnn
+ ┃ ┣ 📂plot
+ ┃ ┃ ┗ 🐍 utils.py
+ ┃ ┗ 📂wrappers
+ ┃ ┃ ┣ 📂lrp_wrapper
+ ┃ ┃ ┗ 🐍 activation_hook_wrapper.py
+ ┣ 📂scripts
+ ┃ ┗ 🐍  test.py
+ ┣ 📂shells
+ ┃ ┗ 🦪 test.sh
+ ┣ ❄️ .gitignore
+ ┣ 🪙 LICENSE
+ ┣ 📖 README.md
+ ┗ 🐍 setup.py
+ 
 
 
