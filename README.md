@@ -32,7 +32,7 @@ bash shells/test.sh
 
 ## File Structure
 
-
+```bash
 📦xai-cnn
  ┣ 📂xai_cnn
  ┃ ┣ 📂plot
@@ -48,6 +48,6 @@ bash shells/test.sh
  ┣ 🪙 LICENSE
  ┣ 📖 README.md
  ┗ 🐍 setup.py
- 
+``` 
 
 
