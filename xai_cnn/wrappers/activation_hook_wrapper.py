@@ -3,27 +3,35 @@ import torch
 import torch.nn as nn 
 
 class ActivationHookWrapper():
-    tensors = {}  # Tree structure for activations storage
-
+    tensors_class = {}  # Tree structure for activations storage
+    tensors_named = {}
     @staticmethod
-    def forward_hook(module, input, output):
+    def forward_hook_class(module, input, output):
         name = module.__class__.__name__
-        if name not in ActivationHookWrapper.tensors:
-            ActivationHookWrapper.tensors[name] = []
-            ActivationHookWrapper.tensors[name].append((input[0], output[0]))
+        ActivationHookWrapper.tensors_class[name].append((input[0], output[0]))
+    
+    @staticmethod
+    def forward_hook_named(module, input, output):
+        name = module.__class__.__name__
+        ActivationHookWrapper.tensors_named[name].append((input[0], output[0]))
     
     def reset_static_variables(self):
         ActivationHookWrapper.tensors = {}
 
-    def __init__(self, model):
+    def __init__(self, model, named_list=[], class_names=[]):
         self.model = model 
-        for module in self.model.children():
+        for name, module in self.model.named_children():
+            if name in named_list:
+                module.register_forward_hook(ActivationHookWrapper.forward_hook_named)      
+                ActivationHookWrapper.tensors_named[module.__class__.__name__] = []
+
+        for module in self.model.modules():
             name = module.__class__.__name__
-            if name == "Sequential":
-                for submodule in module.children():
-                    submodule.register_forward_hook(ActivationHookWrapper.forward_hook)          
-            else:
-                module.register_forward_hook(ActivationHookWrapper.forward_hook)      
+            if name in class_names:
+                module.register_forward_hook(ActivationHookWrapper.forward_hook_class)      
+                ActivationHookWrapper.tensors_class[name] = []
+
+
 
     def forward_with_register(self, single_image):
         assert single_image.size() == (3, 224,224)
