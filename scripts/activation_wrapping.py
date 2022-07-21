@@ -5,25 +5,31 @@ import torchvision.models as models
 
 # TODO : define your named modules and class modules 
 googlenet_xai_modules ={
-    "named_list" : ['inception4a', 'inception3a'],
-    "class_names" : ['Conv2d', 'ReLU']
+    "named_list" : ['inception5b'],
+    "class_names" : ['Inception', 'Conv2d', 'ReLU']
 }
 vgg16_xai_moduels ={
     "named_list" : ['features'],
     "class_names" : ['Conv2d', 'ReLU', 'Linear']
 }
 
+
 googlenet = models.googlenet(pretrained=True)
 vgg16 = models.vgg16(pretrained=True)
+inception = models.inception_v3(pretrained=True)
+resnext50_32x4d = models.resnext50_32x4d(pretrained=True)
+mobilenet = models.mobilenet_v2(pretrained=True)
+
 
 vgg16_wrapper     = ActivationHookWrapper(vgg16, **vgg16_xai_moduels)
 googlenet_wrapper = ActivationHookWrapper(googlenet, **googlenet_xai_modules)
 
+save_dir = "results"
 
 # TODO : load ImageSet
 for image in range(1):
     image = torch.rand(3,224,224)
-    for wrapper in [vgg16_wrapper, googlenet_wrapper]:
+    for wrapper in [googlenet_wrapper]:
         output = wrapper.forward_with_register(image)
         print("----")
         for k in wrapper.tensors_named:
@@ -37,4 +43,4 @@ for image in range(1):
                 # TODO implmente how to handle it
                 print(k, v[1].size())   # output 
                 # save 
-        
+
